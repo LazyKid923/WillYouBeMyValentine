@@ -1,37 +1,65 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Background scatter setup
-  const bgScatter = document.getElementById("bgScatter");
-  const bgImages = [
-    // Add your background image filenames here (inside /resources/background/)
-    // Example: "heart1.png",
-    // Example: "flower.png",
-  ];
-
-  function rand(min, max) {
-    return Math.random() * (max - min) + min;
+  // Starfield setup
+  const starfield = document.getElementById("starfield");
+  if (starfield) {
+    const starCount = 80;
+    for (let i = 0; i < starCount; i++) {
+      const star = document.createElement("div");
+      star.className = "star" + (Math.random() > 0.8 ? " big" : "");
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.setProperty(
+        "--twinkle-duration",
+        `${1.6 + Math.random() * 2.8}s`
+      );
+      star.style.setProperty(
+        "--twinkle-delay",
+        `${Math.random() * 3}s`
+      );
+      starfield.appendChild(star);
+    }
   }
 
-  if (bgScatter && bgImages.length > 0) {
-    bgImages.forEach((file, idx) => {
-      const img = document.createElement("img");
-      img.src = `./resources/background/${file}`;
+  // Random background images (resources/Background/random) - fixed positions
+  const randomScatter = document.getElementById("randomScatter");
+  const randomImages = [
+    { file: "littlest-pet-shop-lps.gif", left: "8%", top: "8%", width: "250px", rotate: "0deg" },
+    { file: "bow-cute.gif", left: "65%", top: "10%", width: "120px", rotate: "0deg" },
+    { file: "woodchuck.png", left: "15%", top: "65%", width: "50px", rotate: "0deg" },
+    { file: "potaro-porter-robinson-animated.gif", left: "78%", top: "8%", width: "230px", rotate: "35deg" },
+    // { file: "ribbon-cute.gif", left: "32%", top: "8%", width: "165px", rotate: "0deg" },
+    { file: "pink-cute.gif", left: "86%", top: "60%", width: "185px", rotate: "0deg" },
+    { file: "tankair.png", left: "56%", top: "66%", width: "120px", rotate: "0deg" },
+    { file: "lps-deer.gif", left: "65%", top: "30%", width: "120px", rotate: "0deg" },
+    { file: "marroncream-sanrio.gif", left: "30%", top: "30%", width: "120px", rotate: "0deg" },
+    { file: "cherry.png", left: "70%", top: "45%", width: "225px", rotate: "0deg" },
+    { file: "chrome.png", left: "55%", top: "10%", width: "60px", rotate: "-23deg" },
+    { file: "tiffany.png", left: "35%", top: "13%", width: "120px", rotate: "0deg" },
+    { file: "my-melody.gif", left: "33%", top: "65%", width: "165px", rotate: "0deg" },
+    { file: "sonny.png", left: "85%", top: "40%", width: "160px", rotate: "0deg" },
+    { file: "heart.gif", left: "15%", top: "40%", width: "160px", rotate: "0deg" },
+  ];
+
+  function renderRandomImages() {
+    if (!randomScatter || randomImages.length === 0) return;
+    randomScatter.innerHTML = "";
+
+    randomImages.forEach((item) => {
+      const img = new Image();
+      img.src = `./resources/Background/random/${item.file}`;
       img.alt = "";
-      img.className = "bg-item";
+      img.className = "random-item";
 
-      const left = rand(0, 100);
-      const top = rand(0, 100);
-      img.style.left = `${left}%`;
-      img.style.top = `${top}%`;
+      if (item.file.toLowerCase().endsWith(".png")) {
+        img.classList.add("bob");
+      }
 
-      const size = rand(50, 110);
-      img.style.width = `${size}px`;
-      img.style.opacity = rand(0.35, 0.75).toFixed(2);
-      img.style.animationDelay = `${rand(0, 4).toFixed(2)}s`;
+      img.style.left = item.left;
+      img.style.top = item.top;
+      img.style.width = item.width;
+      img.style.setProperty("--rand-rot", item.rotate || "0deg");
 
-      // Mix floating and drifting
-      img.classList.add(idx % 2 === 0 ? "bg-float" : "bg-drift");
-
-      bgScatter.appendChild(img);
+      randomScatter.appendChild(img);
     });
   }
 
@@ -83,10 +111,13 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => {
           envelopeWrapper.style.display = "none";
           mainContent.classList.add("show");
+          renderRandomImages();
         }, 500);
       }, 800);
     });
   }
+
+  renderRandomImages();
 });
 
 function angry() {

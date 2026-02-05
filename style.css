@@ -24,8 +24,7 @@ html {
   box-sizing: border-box;
 }
 
-/* Background scatter */
-.bg-scatter {
+.starfield {
   position: fixed;
   inset: 0;
   z-index: 0;
@@ -33,54 +32,86 @@ html {
   overflow: hidden;
 }
 
+.ribbon-top {
+  position: fixed;
+  left: var(--ribbon-left, 25px);
+  top: var(--ribbon-top, 0px);
+  width: var(--ribbon-width, 120px);
+  height: var(--ribbon-height, 700px);
+  background-image: url("./resources/Background/bow-cute.gif");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  animation: twinkle var(--twinkle-duration, 2.4s) ease-in-out infinite;
+  animation-delay: var(--twinkle-delay, 0s);
+}
+
+.star.big {
+  width: 6px;
+  height: 6px;
+  opacity: 0.9;
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.1;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.2);
+  }
+}
+
+.random-scatter {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.random-item {
+  position: absolute;
+  opacity: 0.85;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.08));
+  transform: rotate(var(--rand-rot, 0deg));
+}
+
+.random-item.bob {
+  animation: bob 3.5s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%, 100% {
+    transform: translateY(0) rotate(var(--rand-rot, 0deg));
+  }
+  50% {
+    transform: translateY(-10px) rotate(var(--rand-rot, 0deg));
+  }
+}
+
 .lace-floor {
   position: fixed;
   left: 0;
   right: 0;
   bottom: var(--lace-offset-y, 0px);
-  height: var(--lace-height, 40px);
+  height: var(--lace-height, 75px);
   background-image: url("./resources/Background/lace.png");
   background-repeat: repeat-x;
-  background-size: var(--lace-tile-width, 80px) 100%;
+  background-size: var(--lace-tile-width, 400px) 100%;
   z-index: 0;
   pointer-events: none;
-}
-
-.bg-item {
-  position: absolute;
-  width: 80px;
-  height: auto;
-  opacity: 0.7;
-  filter: blur(0.2px);
-}
-
-.bg-float {
-  animation: bgFloat 6s ease-in-out infinite;
-}
-
-.bg-drift {
-  animation: bgDrift 14s linear infinite;
-}
-
-@keyframes bgFloat {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-12px) rotate(3deg);
-  }
-}
-
-@keyframes bgDrift {
-  0% {
-    transform: translateX(-10px) translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateX(10px) translateY(-8px) rotate(4deg);
-  }
-  100% {
-    transform: translateX(-10px) translateY(0) rotate(0deg);
-  }
 }
 
 /* Envelope Styles */
@@ -247,14 +278,6 @@ html {
   transform-origin: center;
 }
 
-.absImage {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
-}
 .image1 {
   height: 40px;
   width: 40px;
@@ -284,24 +307,6 @@ html {
   -webkit-backdrop-filter: blur(10px);
   background-color: rgba(0, 0, 0, 0.5);
 }
-.audio {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
-  z-index: 1;
-}
-
-.yesModel {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-}
-
 .model-content {
   position: absolute;
   top: 50%;
@@ -345,11 +350,6 @@ html {
     width: 300px;
   }
 
-  .bg-item {
-    width: 60px;
-    opacity: 0.6;
-  }
-  
   .envelope-img {
     width: 170px;
   }
