@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wanna be My Valentine??</title>
+    <link rel="stylesheet" href="style.css" />
+    <meta name="description" content="There is a surprise." />
+    <meta name="keywords" content="Valentine, Love, Surprise" />
+  </head>
+  <body>
+    <!-- Background scatter layer -->
+    <div class="bg-scatter" id="bgScatter" aria-hidden="true"></div>
+    <div class="lace-floor" aria-hidden="true"></div>
+
+    <!-- Envelope Opening Animation -->
+    <div class="envelope-wrapper" id="envelopeWrapper">
+      <div class="bambi-wrap" aria-hidden="true">
+        <video
+          class="bambi-vid"
+          autoplay
+          loop
+          muted
+          playsinline
+        >
+          <source
+            src="./resources/Background/bambi_run_and_jump-Picsart-BackgroundRemover.mp4"
+            type="video/mp4"
+          />
+        </video>
+      </div>
+      <img
+        class="envelope-img"
+        id="envelopeImg"
+        src="./resources/envelop_closed.png"
+        alt="Closed envelope"
+      />
+      <p class="envelope-text">Click the envelope!</p>
+    </div>
+
+    <!-- Main Content (hidden initially) -->
+    <div class="main-content" id="mainContent">
+      <h1 class="headerText" id="wedate">Do you want to be my Valentine? 🥺</h1>
+      <img class="image" src="./resources/happy1.gif" alt="heyy" id="mainImg" />
+      <div class="flex" id="btns">
+        <button
+          class="button"
+          id="yes"
+          onmouseenter="happy()"
+          onmouseleave="normal()"
+          onclick="yes()"
+        >
+          Yes 🥰
+        </button>
+        <button
+          class="button"
+          id="no"
+          onmouseenter="angry()"
+          onmouseleave="normal()"
+          onclick="no()"
+        >
+          No 😭
+        </button>
+      </div>
+      <div class="absImages" id="absImg">
+        <img class="image1" src="./resources/heart.gif" alt="heyy" />
+        <img class="image1" src="./resources/heart.gif" alt="heyy" />
+        <img class="image1" src="./resources/heart.gif" alt="heyy" />
+        <img class="image1" src="./resources/heart.gif" alt="heyy" />
+        <img class="image1" src="./resources/heart.gif" alt="heyy" />
+        <img class="image1" src="./resources/heart.gif" alt="heyy" />
+        <img class="image1" src="./resources/heart.gif" alt="heyy" />
+        <img class="image1" src="./resources/heart.gif" alt="heyy" />
+        <img class="image1" src="./resources/heart.gif" alt="heyy" />
+        <img class="image1" src="./resources/heart.gif" alt="heyy" />
+      </div>
+
+      <div class="model" id="model2">
+        <audio id="happyMusic" style="opacity: 0" controls loop>
+          <source src="./resources/happy.mp3" type="audio/mp3" />
+          Your browser does not support the audio element.
+        </audio>
+        <div class="model-content">
+          <p class="modelText" id="modelText2">I Love you 😘😘</p>
+          <img
+            class="modelImg"
+            id="modelImg2"
+            src="https://takelessons.com/blog/wp-content/uploads/2013/07/happy-cat.gif"
+            alt="heyy"
+          />
+          <button
+            class="button"
+            id="yes"
+            onmouseenter="happy()"
+            onmouseleave="normal()"
+            onclick="ly2()"
+          >
+            Love You Too 🥰
+          </button>
+        </div>
+      </div>
+
+      <div id="model" class="model">
+        <audio id="sadMusic" style="opacity: 0" controls loop>
+          <source src="./resources/sad.mp3" type="audio/mp3" />
+          Your browser does not support the audio element.
+        </audio>
+        <div class="model-content">
+          <p class="modelText" id="modelText">Please</p>
+          <img
+            class="modelImg"
+            id="modelImg"
+            src="https://media1.tenor.com/images/9413ffc5a11722a3cc456a88810750bd/tenor.gif?itemid=14193216"
+            alt="heyy"
+          />
+          <div class="flex">
+            <button
+              class="button"
+              id="yes"
+              onmouseenter="happy()"
+              onmouseleave="normal()"
+              onclick="yes()"
+            >
+              Yes 🥰
+            </button>
+            <button
+              class="button"
+              id="no"
+              onmouseenter="angry()"
+              onmouseleave="normal()"
+              onclick="no()"
+            >
+              No 😭
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="script.js"></script>
+</html>

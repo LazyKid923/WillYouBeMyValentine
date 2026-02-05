@@ -1,0 +1,361 @@
+body {
+  background-color: #f8c8dc;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden !important;
+}
+html {
+  overflow: hidden;
+}
+@import url("https://fonts.googleapis.com/css2?family=Love+Light&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lovers+Quarrel&display=swap");
+* {
+  box-sizing: border-box;
+}
+
+/* Background scatter */
+.bg-scatter {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.lace-floor {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: var(--lace-offset-y, 0px);
+  height: var(--lace-height, 40px);
+  background-image: url("./resources/Background/lace.png");
+  background-repeat: repeat-x;
+  background-size: var(--lace-tile-width, 80px) 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bg-item {
+  position: absolute;
+  width: 80px;
+  height: auto;
+  opacity: 0.7;
+  filter: blur(0.2px);
+}
+
+.bg-float {
+  animation: bgFloat 6s ease-in-out infinite;
+}
+
+.bg-drift {
+  animation: bgDrift 14s linear infinite;
+}
+
+@keyframes bgFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(3deg);
+  }
+}
+
+@keyframes bgDrift {
+  0% {
+    transform: translateX(-10px) translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateX(10px) translateY(-8px) rotate(4deg);
+  }
+  100% {
+    transform: translateX(-10px) translateY(0) rotate(0deg);
+  }
+}
+
+/* Envelope Styles */
+.envelope-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  animation: fadeIn 1s ease-in;
+}
+
+.envelope-img {
+  width: 220px;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.envelope-img:hover {
+  transform: scale(1.06);
+}
+
+.envelope-text {
+  font-family: "Lovers Quarrel";
+  font-size: 28px;
+  color: #ff4f99;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Main Content */
+.main-content {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  animation: fadeIn 1s ease-in;
+  padding-top: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.main-content.show {
+  display: flex;
+}
+
+.headerText {
+  font-weight: 700;
+  font-size: 40px;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-family: "Lovers Quarrel";
+}
+.image {
+  object-fit: cover;
+  mix-blend-mode: multiply;
+  height: 400px;
+  width: 400px;
+}
+
+.bambi-wrap {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bambi-vid {
+  position: absolute;
+  width: 320px;
+  height: auto;
+  display: block;
+  left: var(--bambi-start-x, -35vw);
+  bottom: var(--bambi-floor, 18px);
+  animation: bambiRunAcross var(--bambi-duration, 8s) linear infinite;
+  animation-delay: var(--bambi-delay, 0s);
+  transform-origin: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.bambi-vid.is-ready {
+  visibility: visible;
+  opacity: 1;
+}
+
+@keyframes bambiRunAcross {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(
+      calc(var(--bambi-end-x, 120vw) - var(--bambi-start-x, -35vw))
+    );
+  }
+}
+
+.flex {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 10px;
+}
+.button {
+  background-color: #ff4f99;
+  border: none;
+  color: rgb(0, 0, 0);
+  padding: 10px 20px;
+  text-align: center;
+  padding: 20px 30px;
+  border-radius: 20px;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  background-color: #ff71ac;
+  color: white;
+  transition: ease-in-out 0.3s;
+}
+
+/* Yes button grows when no is clicked */
+#yes {
+  transform-origin: center;
+}
+
+.absImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+.image1 {
+  height: 40px;
+  width: 40px;
+  object-fit: cover;
+  mix-blend-mode: multiply;
+  position: absolute;
+  animation: slideUp 1s ease-in-out;
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+}
+.model {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  z-index: 1;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.audio {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  z-index: 1;
+}
+
+.yesModel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.model-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 20px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.modelText {
+  font-weight: 700;
+  font-size: 20px;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-family: "Lovers Quarrel";
+}
+
+.modelImg {
+  max-height: 300px;
+  width: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .headerText {
+    font-size: 30px;
+  }
+  
+  .image {
+    height: 300px;
+    width: 300px;
+  }
+
+  .bg-item {
+    width: 60px;
+    opacity: 0.6;
+  }
+  
+  .envelope-img {
+    width: 170px;
+  }
+  
+  .model-content {
+    width: 90%;
+    max-width: 350px;
+  }
+}
