@@ -79,6 +79,13 @@ document.addEventListener("DOMContentLoaded", function () {
       setTimeout(() => {
         document.body.classList.add("show-envelope");
       }, envelopeDelayMs);
+      setTimeout(() => {
+        const envelopeText = document.querySelector(".envelope-text");
+        if (envelopeText) {
+          envelopeText.style.transition = "opacity 0.5s ease";
+          envelopeText.style.opacity = "1";
+        }
+      }, envelopeDelayMs + 3000);
     }, 600);
   }
 

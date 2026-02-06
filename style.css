@@ -157,6 +157,9 @@ html {
   font-size: 28px;
   color: #ff4f99;
   animation: bounce 2s ease-in-out infinite;
+  opacity: 0;
+  position: relative;
+  top: -20px;
 }
 
 @keyframes bounce {
