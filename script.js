@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     randomImages.forEach((item) => {
       const img = new Image();
-      img.src = `./resources/Background/random/${item.file}`;
+      img.src = `./resources/Background/Random/${item.file}`;
       img.alt = "";
       img.className = "random-item";
 
