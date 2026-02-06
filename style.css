@@ -205,14 +205,6 @@ html {
   display: flex;
 }
 
-.headerText {
-  font-weight: 700;
-  font-size: 40px;
-  text-align: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  font-family: "Lovers Quarrel";
-}
 
 .paper {
   width: min(520px, 80vw);
@@ -226,6 +218,17 @@ html {
   align-items: center;
   justify-content: center;
   text-align: center;
+}
+
+.compact-paper .paper {
+  width: min(420px, 82vw);
+  min-height: 200px;
+  padding: 24px 28px;
+  aspect-ratio: auto;
+}
+
+.paper-hidden .paper {
+  display: none;
 }
 
 .btn-shake {
@@ -321,7 +324,7 @@ html {
 }
 
 /* Yes button grows when no is clicked */
-#yes {
+#yesMain {
   transform-origin: left bottom;
 }
 
@@ -376,12 +379,17 @@ html {
   display: none;
 }
 
+#loveVideo {
+  display: block;
+}
+
+#happyImg,
+#happyVid {
+  display: none;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
-  .headerText {
-    font-size: 30px;
-  }
-
   .paper {
     min-height: 220px;
     padding: 22px 24px;

@@ -54,7 +54,7 @@
       <div class="flex" id="btns">
         <button
           class="button"
-          id="yes"
+          id="yesMain"
           onmouseenter="happy()"
           onmouseleave="normal()"
           onclick="yes()"
@@ -63,7 +63,7 @@
         </button>
         <button
           class="button"
-          id="no"
+          id="noMain"
           onmouseenter="angry()"
           onmouseleave="normal()"
           onclick="no()"
@@ -73,26 +73,29 @@
       </div>
 
       <div class="model" id="model2">
-        <audio id="happyMusic" style="opacity: 0" controls loop>
-          <source src="./resources/happy.mp3" type="audio/mp3" />
+        <audio id="correctAudio" style="opacity: 0" controls>
+          <source src="./resources/Audio/correct.mp3" type="audio/mp3" />
+          Your browser does not support the audio element.
+        </audio>
+        <audio id="happyStepAudio" style="opacity: 0" controls>
           Your browser does not support the audio element.
         </audio>
         <div class="model-content">
-          <p class="modelText" id="modelText2">I Love you 😘😘</p>
-          <img
-            class="modelImg"
-            id="modelImg2"
-            src="https://takelessons.com/blog/wp-content/uploads/2013/07/happy-cat.gif"
-            alt="heyy"
-          />
+          <p class="modelText" id="loveHeader">I LOVE YOU!</p>
+          <video
+            class="modelVid"
+            id="loveVideo"
+            playsinline
+            loop
+          ></video>
+          <img class="modelImg" id="happyImg" alt="happy" />
+          <video class="modelVid" id="happyVid" playsinline loop></video>
           <button
             class="button"
-            id="yes"
-            onmouseenter="happy()"
-            onmouseleave="normal()"
+            id="loveNext"
             onclick="ly2()"
           >
-            Love You Too 🥰
+            Click to receive more of my love!
           </button>
         </div>
       </div>
@@ -130,14 +133,14 @@
           <div class="flex">
             <button
               class="button"
-              id="yes"
+              id="yesModal"
               onclick="yes()"
             >
               Of course!
             </button>
             <button
               class="button"
-              id="no"
+              id="noModal"
               onclick="no()"
             >
               No way in hell!

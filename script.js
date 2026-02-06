@@ -276,6 +276,45 @@ const sadSequence = [
 
 const orderedSadSequence = [...sadSequence].sort((a, b) => a.order - b.order);
 
+// Happy sequence (starts after Love You Too is clicked)
+const happySequence = [
+  {
+    order: 1,
+    text: "IRISH SPRING GREEN FN",
+    src: "./resources/Yes/green-fn.gif",
+    audioPlaylist: [
+      "./resources/Audio/greengiant.mp3",
+      "./resources/Audio/splash.mp3",
+      "./resources/Audio/flight.mp3",
+      "./resources/Audio/cash.mp3",
+    ],
+  },
+  { order: 2, text: "BOOOOOOM", src: "./resources/Yes/boom.mp4" },
+  {
+    order: 3,
+    text: "Let's friggin go!",
+    src: "./resources/Yes/katieb.gif",
+    audio: "./resources/Audio/rizz-sound-effect.mp3",
+  },
+  {
+    order: 4,
+    text: "YESSS",
+    src: "./resources/Yes/rodrick.png",
+    audio: "./resources/Audio/yes.mp3",
+  },
+  {
+    order: 5,
+    text: "YUH YUH YUH",
+    src: "./resources/Yes/dog.mp4",
+  },
+];
+
+const orderedHappySequence = [...happySequence].sort((a, b) => a.order - b.order);
+let happyStarted = false;
+let happyIndex = -1;
+let happyAudioQueue = [];
+let happyAudioIndex = 0;
+
 function normal() {
   var paperText = document.getElementById("paperText");
   if (paperText) {
@@ -285,39 +324,154 @@ function normal() {
 
 let counter = 0;
 let yesButtonScale = 1;
+let loveReady = false;
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function stopHappyAudioLoop() {
+  const happyStepAudio = document.getElementById("happyStepAudio");
+  if (happyStepAudio) {
+    happyStepAudio.onended = null;
+    happyStepAudio.pause();
+  }
+  happyAudioQueue = [];
+  happyAudioIndex = 0;
+}
+
+function startHappyAudioLoop(list) {
+  const happyStepAudio = document.getElementById("happyStepAudio");
+  if (!happyStepAudio || !list || list.length === 0) return;
+
+  happyAudioQueue = shuffle([...list]);
+  happyAudioIndex = 0;
+
+  const playNext = () => {
+    if (happyAudioQueue.length === 0) return;
+    if (happyAudioIndex >= happyAudioQueue.length) {
+      happyAudioQueue = shuffle([...happyAudioQueue]);
+      happyAudioIndex = 0;
+    }
+    happyStepAudio.src = happyAudioQueue[happyAudioIndex];
+    happyAudioIndex += 1;
+    happyStepAudio.currentTime = 0;
+    happyStepAudio.play().catch(() => {});
+  };
+
+  happyStepAudio.onended = playNext;
+  playNext();
+}
+
+function showHappyStep(step) {
+  const loveHeader = document.getElementById("loveHeader");
+  const loveVideo = document.getElementById("loveVideo");
+  const happyImg = document.getElementById("happyImg");
+  const happyVid = document.getElementById("happyVid");
+  const loveBtn = document.getElementById("loveNext");
+
+  if (loveHeader && step.text) {
+    loveHeader.innerText = step.text;
+  }
+
+  if (loveVideo) {
+    loveVideo.pause();
+    loveVideo.style.display = "none";
+  }
+
+  const isVideo = /\.(mp4|webm)$/i.test(step.src);
+  if (isVideo) {
+    if (happyImg) happyImg.style.display = "none";
+    if (happyVid) {
+      happyVid.style.display = "block";
+      happyVid.src = step.src;
+      happyVid.muted = false;
+      happyVid.currentTime = 0;
+      happyVid.play().catch(() => {});
+    }
+  } else {
+    if (happyVid) {
+      happyVid.pause();
+      happyVid.style.display = "none";
+    }
+    if (happyImg) {
+      happyImg.style.display = "block";
+      happyImg.src = step.src;
+    }
+  }
+
+  stopHappyAudioLoop();
+  if (step.audioPlaylist) {
+    startHappyAudioLoop(step.audioPlaylist);
+  } else if (step.audio) {
+    const happyStepAudio = document.getElementById("happyStepAudio");
+    if (happyStepAudio) {
+      happyStepAudio.onended = null;
+      happyStepAudio.src = step.audio;
+      happyStepAudio.currentTime = 0;
+      happyStepAudio.play().catch(() => {});
+    }
+  }
+
+  if (loveBtn) {
+    if (happyIndex >= orderedHappySequence.length - 1) {
+      loveBtn.innerText = "Send me home";
+    } else {
+      loveBtn.innerText = "Click to receive more of my love!";
+    }
+  }
+}
+
+function advanceHappySequence() {
+  if (orderedHappySequence.length === 0) return;
+  happyIndex = Math.min(happyIndex + 1, orderedHappySequence.length - 1);
+  const step = orderedHappySequence[happyIndex];
+  showHappyStep(step);
+}
 
 function no() {
   counter++;
 
   // Make the yes button bigger each time no is clicked
   yesButtonScale += 0.2;
-  const yesButton = document.getElementById("yes");
-  const yesRect = yesButton.getBoundingClientRect();
-  const maxScaleX =
-    (window.innerWidth - 12 - yesRect.left) / yesButton.offsetWidth;
-  const clampedScale = Math.min(yesButtonScale, Math.max(1, maxScaleX));
-  yesButtonScale = clampedScale;
-  yesButton.style.transform = `scale(${yesButtonScale})`;
+  const yesButton = document.getElementById("yesMain");
+  if (yesButton) {
+    const yesRect = yesButton.getBoundingClientRect();
+    const maxScaleX =
+      (window.innerWidth - 12 - yesRect.left) / yesButton.offsetWidth;
+    const clampedScale = Math.min(yesButtonScale, Math.max(1, maxScaleX));
+    yesButtonScale = clampedScale;
+    yesButton.style.transform = `scale(${yesButtonScale})`;
+  }
 
   // Shake the "No" button
-  const noButton = document.getElementById("no");
+  const noMain = document.getElementById("noMain");
+  const noModal = document.getElementById("noModal");
+  const noButton =
+    (noModal && noModal.offsetParent !== null && noModal) || noMain;
   if (noButton) {
     noButton.classList.remove("btn-shake");
     void noButton.offsetWidth;
     noButton.classList.add("btn-shake");
-    const baseWidth = yesButton.offsetWidth;
-    const extraWidth = baseWidth * (yesButtonScale - 1);
-    noButton.style.marginLeft = `${Math.max(0, extraWidth + 12)}px`;
+    if (yesButton) {
+      const baseWidth = yesButton.offsetWidth;
+      const extraWidth = baseWidth * (yesButtonScale - 1);
+      noButton.style.marginLeft = `${Math.max(0, extraWidth + 12)}px`;
+    }
   }
 
   // Show the sad modal only after 10 "No" clicks
   if (counter >= 10) {
-    let happyMusic = document.getElementById("happyMusic");
     let noSequenceAudio = document.getElementById("noSequenceAudio");
     let sadStepAudio = document.getElementById("sadStepAudio");
-    happyMusic.pause();
     let model = document.getElementById("model");
     model.style.display = "flex";
+    document.body.classList.add("compact-paper");
+    document.body.classList.add("paper-hidden");
     const btns = document.getElementById("btns");
     if (btns) {
       btns.style.display = "none";
@@ -325,8 +479,8 @@ function no() {
     const modelImage = document.getElementById("modelImg");
     const modelVideo = document.getElementById("modelVid");
     const modelText = document.getElementById("modelText");
-    const modalYes = model ? model.querySelector("#yes") : null;
-    const modalNo = model ? model.querySelector("#no") : null;
+    const modalYes = model ? model.querySelector("#yesModal") : null;
+    const modalNo = model ? model.querySelector("#noModal") : null;
     const homeBtn = document.getElementById("homeBtn");
     const stepIndex = Math.min(counter - 10, orderedSadSequence.length - 1);
     const step = orderedSadSequence[stepIndex];
@@ -380,32 +534,91 @@ function no() {
 }
 
 function yes() {
-  if (counter >= 3) {
-    let model = document.getElementById("model2");
-    let model2 = document.getElementById("model");
-    model2.style.display = "none";
-    let happyMusic = document.getElementById("happyMusic");
-    happyMusic.play();
+  const model = document.getElementById("model2");
+  const sadModel = document.getElementById("model");
+  const btns = document.getElementById("btns");
+  const paperText = document.getElementById("paperText");
+  const loveHeader = document.getElementById("loveHeader");
+  const loveVideo = document.getElementById("loveVideo");
+  const correctAudio = document.getElementById("correctAudio");
+  const bgSong = document.getElementById("bgSong");
+  const noSequenceAudio = document.getElementById("noSequenceAudio");
+  const sadStepAudio = document.getElementById("sadStepAudio");
+  const modelVideo = document.getElementById("modelVid");
+  const loveBtn = document.getElementById("loveNext");
+
+  // Stop any other audio when "Yes" is clicked
+  [bgSong, noSequenceAudio, sadStepAudio].forEach((audio) => {
+    if (audio) {
+      audio.pause();
+    }
+  });
+
+  if (modelVideo) {
+    modelVideo.pause();
+    modelVideo.currentTime = 0;
+    modelVideo.muted = true;
+  }
+
+  if (sadModel) sadModel.style.display = "none";
+  document.body.classList.add("compact-paper");
+  document.body.classList.add("paper-hidden");
+  if (btns) btns.style.display = "none";
+  if (paperText) {
+    paperText.innerText = "I LOVE YOU!";
+  }
+  if (loveHeader) {
+    loveHeader.innerText = "I LOVE YOU!";
+  }
+
+  if (loveVideo) {
+    loveVideo.src = "./resources/Yes/Crumbl.mp4";
+    loveVideo.muted = false;
+    loveVideo.currentTime = 0;
+  }
+
+  if (model) {
     model.style.display = "none";
     setTimeout(() => {
       model.style.display = "flex";
     }, 100);
-    const paperText = document.getElementById("paperText");
-    const btns = document.getElementById("btns");
-    btns.style.display = "none";
-    if (paperText) {
-      paperText.innerText = "We are dating now. I love you cutie.";
-    }
-  } else {
-    alert("Not so fast—try clicking No a few times first.");
   }
+
+  if (loveBtn) {
+    loveBtn.innerText = "Click to receive more of my love!";
+  }
+
+  if (correctAudio) {
+    correctAudio.onended = () => {
+      if (loveVideo) {
+        loveVideo.play().catch(() => {});
+      }
+    };
+    correctAudio.currentTime = 0;
+    correctAudio.play().catch(() => {
+      if (loveVideo) {
+        loveVideo.play().catch(() => {});
+      }
+    });
+  } else if (loveVideo) {
+    loveVideo.play().catch(() => {});
+  }
+
+  loveReady = true;
+  happyStarted = false;
+  happyIndex = -1;
 }
 
 function ly2() {
-  let model = document.getElementById("model2");
-  model.style.display = "none";
-  let model2 = document.getElementById("model");
-  model2.style.display = "none";
+  if (!loveReady) return;
+  if (!happyStarted) {
+    happyStarted = true;
+  }
+  if (happyIndex >= orderedHappySequence.length - 1) {
+    goHome();
+  } else {
+    advanceHappySequence();
+  }
 }
 
 function goHome() {
