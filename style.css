@@ -27,7 +27,7 @@ html {
 .starfield {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: -1;
   pointer-events: none;
   overflow: hidden;
 }
@@ -47,19 +47,37 @@ html {
 
 .star {
   position: absolute;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
+  --heart-size: 8px;
+  width: var(--heart-size);
+  height: var(--heart-size);
   background: rgba(255, 255, 255, 0.9);
+  transform: none;
+  transform-origin: center;
   opacity: 0;
   animation: twinkle var(--twinkle-duration, 2.4s) ease-in-out infinite;
   animation-delay: var(--twinkle-delay, 0s);
 }
 
 .star.big {
-  width: 6px;
-  height: 6px;
+  --heart-size: 12px;
   opacity: 0.9;
+}
+
+.star::before,
+.star::after {
+  content: "";
+  position: absolute;
+  width: var(--heart-size);
+  height: var(--heart-size);
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  top: calc(-1 * var(--heart-size) / 2);
+  left: 0;
+}
+
+.star::after {
+  left: calc(-1 * var(--heart-size) / 2);
+  top: 0;
 }
 
 @keyframes twinkle {
@@ -195,11 +213,40 @@ html {
   margin-bottom: 20px;
   font-family: "Lovers Quarrel";
 }
-.image {
-  object-fit: cover;
-  mix-blend-mode: multiply;
-  height: 400px;
-  width: 400px;
+
+.paper {
+  width: min(520px, 80vw);
+  aspect-ratio: 1 / 1.4142; /* A4 ratio */
+  padding: 28px 32px;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.btn-shake {
+  animation: btnShake 0.28s ease-in-out;
+}
+
+@keyframes btnShake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}
+
+.paper-text {
+  font-family: "Lovers Quarrel";
+  font-size: 42px;
+  color: #7a2f4f;
+  margin: 0;
+  line-height: 1.1;
 }
 
 .bambi-wrap {
@@ -275,26 +322,9 @@ html {
 
 /* Yes button grows when no is clicked */
 #yes {
-  transform-origin: center;
+  transform-origin: left bottom;
 }
 
-.image1 {
-  height: 40px;
-  width: 40px;
-  object-fit: cover;
-  mix-blend-mode: multiply;
-  position: absolute;
-  animation: slideUp 1s ease-in-out;
-}
-
-@keyframes slideUp {
-  0% {
-    transform: translateY(100%);
-  }
-  100% {
-    transform: translateY(0%);
-  }
-}
 .model {
   position: absolute;
   top: 0;
@@ -303,9 +333,9 @@ html {
   height: 100%;
   display: none;
   z-index: 1;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background-color: transparent;
 }
 .model-content {
   position: absolute;
@@ -344,10 +374,14 @@ html {
   .headerText {
     font-size: 30px;
   }
-  
-  .image {
-    height: 300px;
-    width: 300px;
+
+  .paper {
+    min-height: 220px;
+    padding: 22px 24px;
+  }
+
+  .paper-text {
+    font-size: 34px;
   }
 
   .envelope-img {
@@ -358,4 +392,12 @@ html {
     width: 90%;
     max-width: 350px;
   }
+}
+.bg-dim .starfield,
+.bg-dim .random-scatter,
+.bg-dim .lace-floor,
+.bg-dim .ribbon-top,
+.bg-dim .bambi-wrap {
+  filter: blur(2px);
+  opacity: 0.7;
 }

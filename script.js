@@ -28,16 +28,19 @@ document.addEventListener("DOMContentLoaded", function () {
     { file: "woodchuck.png", left: "15%", top: "65%", width: "50px", rotate: "0deg" },
     { file: "potaro-porter-robinson-animated.gif", left: "78%", top: "8%", width: "230px", rotate: "35deg" },
     // { file: "ribbon-cute.gif", left: "32%", top: "8%", width: "165px", rotate: "0deg" },
-    { file: "pink-cute.gif", left: "86%", top: "60%", width: "185px", rotate: "0deg" },
+    { file: "pink-cute.gif", left: "86%", top: "65%", width: "185px", rotate: "0deg" },
     { file: "tankair.png", left: "56%", top: "66%", width: "120px", rotate: "0deg" },
     { file: "lps-deer.gif", left: "65%", top: "30%", width: "120px", rotate: "0deg" },
     { file: "marroncream-sanrio.gif", left: "30%", top: "30%", width: "120px", rotate: "0deg" },
     { file: "cherry.png", left: "70%", top: "45%", width: "225px", rotate: "0deg" },
     { file: "chrome.png", left: "55%", top: "10%", width: "60px", rotate: "-23deg" },
-    { file: "tiffany.png", left: "35%", top: "13%", width: "120px", rotate: "0deg" },
-    { file: "my-melody.gif", left: "33%", top: "65%", width: "165px", rotate: "0deg" },
+    { file: "tiffany.png", left: "40%", top: "13%", width: "120px", rotate: "0deg" },
+    { file: "my-melody.gif", left: "40%", top: "65%", width: "165px", rotate: "0deg" },
     { file: "sonny.png", left: "85%", top: "40%", width: "160px", rotate: "0deg" },
     { file: "heart.gif", left: "15%", top: "40%", width: "160px", rotate: "0deg" },
+    { file: "tulip.png", left: "25%", top: "40%", width: "250px", rotate: "0deg" },
+    { file: "peanut.png", left: "27%", top: "7%", width: "125px", rotate: "0deg" },
+    { file: "mai.gif", left: "25%", top: "70%", width: "125px", rotate: "0deg" },
   ];
 
   function renderRandomImages() {
@@ -63,9 +66,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Get all elements with class "image1"
-  var images = document.querySelectorAll(".image1");
-
   // Ensure Bambi video keeps looping (some browsers pause after first loop)
   const bambiVideo = document.querySelector(".bambi-vid");
   if (bambiVideo) {
@@ -84,17 +84,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Function to set random position for an element
-  function setRandomPosition(element) {
-    element.style.top = Math.floor(Math.random() * window.innerHeight) + "px";
-    element.style.left = Math.floor(Math.random() * window.innerWidth) + "px";
-  }
-
-  // Set random position for each image
-  images.forEach(function (image) {
-    setRandomPosition(image);
-  });
-
   // Envelope click handler
   const envelopeWrapper = document.getElementById("envelopeWrapper");
   const envelopeImg = document.getElementById("envelopeImg");
@@ -111,6 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => {
           envelopeWrapper.style.display = "none";
           mainContent.classList.add("show");
+          document.body.classList.add("bg-dim");
           renderRandomImages();
         }, 500);
       }, 800);
@@ -121,30 +111,17 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function angry() {
-  // get all image with class image1 and change the src
-  var images = document.querySelectorAll(".image1");
-  var absImg = document.getElementById("absImg");
-  var mainImg = document.getElementById("mainImg");
-  mainImg.src = "./resources/sad1.gif";
-
-  absImg.style.display = "flex";
-
-  images.forEach(function (image) {
-    image.src = "./resources/sad.gif";
-  });
+  var paperText = document.getElementById("paperText");
+  if (paperText) {
+    paperText.innerText = "Okay… maybe later? 🥺";
+  }
 }
 
 function happy() {
-  // get all image with class image1 and change the src
-  var images = document.querySelectorAll(".image1");
-  var absImg = document.getElementById("absImg");
-  absImg.style.display = "flex";
-  var mainImg = document.getElementById("mainImg");
-  mainImg.src = "./resources/happy3.gif";
-
-  images.forEach(function (image) {
-    image.src = "./resources/heart.gif";
-  });
+  var paperText = document.getElementById("paperText");
+  if (paperText) {
+    paperText.innerText = "Say yes? It would make me so happy 💖";
+  }
 }
 
 const sadCat = [
@@ -167,10 +144,10 @@ const blackmail = [
 ];
 
 function normal() {
-  var absImg = document.getElementById("absImg");
-  absImg.style.display = "none";
-  var mainImg = document.getElementById("mainImg");
-  mainImg.src = "./resources/happy1.gif";
+  var paperText = document.getElementById("paperText");
+  if (paperText) {
+    paperText.innerText = "Do you want to be my Valentine? 🥺";
+  }
 }
 
 let counter = 0;
@@ -178,26 +155,46 @@ let yesButtonScale = 1;
 
 function no() {
   counter++;
-  
+
   // Make the yes button bigger each time no is clicked
   yesButtonScale += 0.2;
   const yesButton = document.getElementById("yes");
+  const yesRect = yesButton.getBoundingClientRect();
+  const maxScaleX =
+    (window.innerWidth - 12 - yesRect.left) / yesButton.offsetWidth;
+  const clampedScale = Math.min(yesButtonScale, Math.max(1, maxScaleX));
+  yesButtonScale = clampedScale;
   yesButton.style.transform = `scale(${yesButtonScale})`;
-  
-  let sadMusic = document.getElementById("sadMusic");
-  let happyMusic = document.getElementById("happyMusic");
-  happyMusic.pause();
-  sadMusic.play();
-  let model = document.getElementById("model");
-  model.style.display = "none";
-  setTimeout(() => {
+
+  // Shake the "No" button
+  const noButton = document.getElementById("no");
+  if (noButton) {
+    noButton.classList.remove("btn-shake");
+    void noButton.offsetWidth;
+    noButton.classList.add("btn-shake");
+    const baseWidth = yesButton.offsetWidth;
+    const extraWidth = baseWidth * (yesButtonScale - 1);
+    noButton.style.marginLeft = `${Math.max(0, extraWidth + 12)}px`;
+  }
+
+  // Show the sad modal only after 10 "No" clicks
+  if (counter >= 10) {
+    let sadMusic = document.getElementById("sadMusic");
+    let happyMusic = document.getElementById("happyMusic");
+    happyMusic.pause();
+    sadMusic.play();
+    let model = document.getElementById("model");
     model.style.display = "flex";
+    const btns = document.getElementById("btns");
+    if (btns) {
+      btns.style.display = "none";
+    }
     const modelImage = document.getElementById("modelImg");
     const modelText = document.getElementById("modelText");
     modelImage.src = sadCat[Math.floor(Math.random() * sadCat.length)];
     modelText.innerText =
       blackmail[Math.floor(Math.random() * blackmail.length)];
-  }, 100);
+  }
 }
 
 function yes() {
@@ -213,10 +210,12 @@ function yes() {
     setTimeout(() => {
       model.style.display = "flex";
     }, 100);
-    const wedate = document.getElementById("wedate");
+    const paperText = document.getElementById("paperText");
     const btns = document.getElementById("btns");
     btns.style.display = "none";
-    wedate.innerText = "We are dating now. I love you cutie.";
+    if (paperText) {
+      paperText.innerText = "We are dating now. I love you cutie.";
+    }
   } else {
     alert("Kuch to Bhao khao cutie. Sidhe yes mat bola karo.");
   }
