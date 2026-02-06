@@ -9,6 +9,13 @@
     <meta name="keywords" content="Valentine, Love, Surprise" />
   </head>
   <body>
+    <div class="intro-screen" id="introScreen" aria-hidden="true">
+      <div class="intro-content">
+        <h1 class="intro-text" id="introText">Welcome to....</h1>
+        <p class="intro-subtext">Click anywhere to continue</p>
+      </div>
+    </div>
+
     <div class="starfield" id="starfield" aria-hidden="true"></div>
     <div class="ribbon-top" aria-hidden="true"></div>
     <div class="random-scatter" id="randomScatter" aria-hidden="true"></div>
@@ -91,8 +98,18 @@
       </div>
 
       <div id="model" class="model">
-        <audio id="sadMusic" style="opacity: 0" controls loop>
-          <source src="./resources/sad.mp3" type="audio/mp3" />
+        <audio id="noSequenceAudio" style="opacity: 0" controls loop>
+          <source
+            src="./resources/Audio/hallway-ambiance-extended-five-nights-at-freddys-2-music.mp3"
+            type="audio/mp3"
+          />
+          Your browser does not support the audio element.
+        </audio>
+        <audio id="sadStepAudio" style="opacity: 0" controls>
+          Your browser does not support the audio element.
+        </audio>
+        <audio id="bgSong" style="opacity: 0" controls loop>
+          <source src="./resources/Audio/How to Pretend.mp3" type="audio/mp3" />
           Your browser does not support the audio element.
         </audio>
         <div class="model-content">
@@ -103,12 +120,17 @@
             src="https://media1.tenor.com/images/9413ffc5a11722a3cc456a88810750bd/tenor.gif?itemid=14193216"
             alt="heyy"
           />
+          <video
+            class="modelVid"
+            id="modelVid"
+            muted
+            playsinline
+            loop
+          ></video>
           <div class="flex">
             <button
               class="button"
               id="yes"
-              onmouseenter="happy()"
-              onmouseleave="normal()"
               onclick="yes()"
             >
               Of course!
@@ -116,11 +138,17 @@
             <button
               class="button"
               id="no"
-              onmouseenter="angry()"
-              onmouseleave="normal()"
               onclick="no()"
             >
               No way in hell!
+            </button>
+            <button
+              class="button"
+              id="homeBtn"
+              onclick="goHome()"
+              style="display: none"
+            >
+              send me back home
             </button>
           </div>
         </div>

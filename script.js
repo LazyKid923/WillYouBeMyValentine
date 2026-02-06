@@ -1,13 +1,135 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // Intro sequence
+  const introScreen = document.getElementById("introScreen");
+  const introText = document.getElementById("introText");
+  const introSubtext = document.querySelector(".intro-subtext");
+  const bgSong = document.getElementById("bgSong");
+  let introStep = 0;
+  let introSubtextTimer = null;
+
+  function showIntro() {
+    document.body.classList.add("intro-active");
+    document.body.classList.remove("fade-in-assets");
+    document.body.classList.remove("show-envelope");
+    if (introScreen) {
+      introScreen.classList.add("show");
+    }
+    if (introSubtext) {
+      introSubtext.classList.remove("show");
+      if (introSubtextTimer) clearTimeout(introSubtextTimer);
+      introSubtextTimer = setTimeout(() => {
+        introSubtext.classList.add("show");
+      }, 5000);
+    }
+  }
+
+  function setIntroText(nextText, cb) {
+    if (!introText) return;
+    introText.classList.add("fade-out");
+    setTimeout(() => {
+      introText.innerText = nextText;
+      introText.classList.remove("fade-out");
+      if (cb) cb();
+    }, 450);
+  }
+
+  function advanceIntro() {
+    if (!introScreen || !introText) return;
+
+    if (introStep === 0) {
+      if (introSubtext) introSubtext.classList.remove("show");
+      setIntroText("Bambi's Valentine Invitation!", () => {
+        introStep = 1;
+        if (introSubtext) {
+          if (introSubtextTimer) clearTimeout(introSubtextTimer);
+          introSubtextTimer = setTimeout(() => {
+            introSubtext.classList.add("show");
+          }, 5000);
+        }
+      });
+      return;
+    }
+
+    // End intro
+    introScreen.classList.add("fade-out");
+    setTimeout(() => {
+      introScreen.classList.remove("show");
+      document.body.classList.remove("intro-active");
+      document.body.classList.add("fade-in-assets");
+
+      if (bgSong) {
+        bgSong.currentTime = 100; // 1:40
+        bgSong.volume = 0;
+        bgSong.play().catch(() => {});
+
+        const fadeDurationMs = 3000;
+        const steps = 30;
+        let current = 0;
+        const interval = setInterval(() => {
+          current += 1;
+          bgSong.volume = Math.min(1, current / steps);
+          if (current >= steps) {
+            clearInterval(interval);
+          }
+        }, fadeDurationMs / steps);
+      }
+
+      // Show envelope after assets fade in
+      const envelopeDelayMs = 2000;
+      setTimeout(() => {
+        document.body.classList.add("show-envelope");
+      }, envelopeDelayMs);
+    }, 600);
+  }
+
+  showIntro();
+  document.addEventListener("click", () => {
+    if (introScreen && introScreen.classList.contains("show")) {
+      advanceIntro();
+    }
+  });
+
   // Starfield setup
   const starfield = document.getElementById("starfield");
   if (starfield) {
     const starCount = 80;
+    const envelopeText = document.querySelector(".envelope-text");
+    const avoidRect = envelopeText
+      ? envelopeText.getBoundingClientRect()
+      : null;
+    const padding = 12;
+
+    function intersectsAvoid(left, top, size) {
+      if (!avoidRect) return false;
+      const right = left + size;
+      const bottom = top + size;
+      return !(
+        right + padding < avoidRect.left ||
+        left - padding > avoidRect.right ||
+        bottom + padding < avoidRect.top ||
+        top - padding > avoidRect.bottom
+      );
+    }
+
     for (let i = 0; i < starCount; i++) {
       const star = document.createElement("div");
       star.className = "star" + (Math.random() > 0.8 ? " big" : "");
-      star.style.left = `${Math.random() * 100}%`;
-      star.style.top = `${Math.random() * 100}%`;
+      const size = star.classList.contains("big") ? 12 : 8;
+      let placed = false;
+      for (let tries = 0; tries < 40; tries++) {
+        const leftPx = Math.random() * (window.innerWidth - size);
+        const topPx = Math.random() * (window.innerHeight - size);
+        if (!intersectsAvoid(leftPx, topPx, size)) {
+          star.style.left = `${(leftPx / window.innerWidth) * 100}%`;
+          star.style.top = `${(topPx / window.innerHeight) * 100}%`;
+          placed = true;
+          break;
+        }
+      }
+      if (!placed) {
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+      }
       star.style.setProperty(
         "--twinkle-duration",
         `${1.6 + Math.random() * 2.8}s`
@@ -91,6 +213,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (envelopeImg) {
     envelopeImg.addEventListener("click", function () {
+      // Fade out background song when envelope is opened
+      if (bgSong && !bgSong.paused) {
+        const fadeOutMs = 2000;
+        const steps = 20;
+        let current = 0;
+        const startVol = bgSong.volume;
+        const targetVol = 0.25;
+        const outInterval = setInterval(() => {
+          current += 1;
+          const t = current / steps;
+          bgSong.volume = Math.max(targetVol, startVol - (startVol - targetVol) * t);
+          if (current >= steps) {
+            clearInterval(outInterval);
+          }
+        }, fadeOutMs / steps);
+      }
+
       // Swap to opened envelope image
       envelopeImg.src = "./resources/envelope_opened.png";
 
@@ -124,24 +263,18 @@ function happy() {
   }
 }
 
-const sadCat = [
-  "https://media1.tenor.com/images/9413ffc5a11722a3cc456a88810750bd/tenor.gif?itemid=14193216",
-  "https://emoji.gg/assets/emoji/5228_cat_cri.gif",
-  "https://media1.tenor.com/images/a0554662ae7c3c60c0a7fdadac74ef18/tenor.gif?itemid=13931206",
-  "https://media3.giphy.com/media/qpCvOBBmBkble/giphy.gif",
-  "https://c.tenor.com/fpIAhF2jIY0AAAAC/cat-crying.gif",
-  "https://c.tenor.com/BP70qe8X0J8AAAAC/crycat-crying-cat.gif",
+// Sequence for the "No" modal (ordered by 'order' ascending)
+const sadSequence = [
+  { order: 1, text: "bro...?", src: "./resources/No/silly-funny.gif" },
+  { order: 2, text: "u good..? anything wrong?", src: "./resources/No/slushy-noobz-thatmartinkid.gif", audio: "./resources/Audio/vine-boom.mp3" },
+  { order: 3, text: "pwease...", src: "./resources/No/slushy-noobz-martin.gif", audio: "./resources/Audio/ceeday-huh-sound-effect.mp3" },
+  { order: 4, text: "wtf man", src: "./resources/No/ishowspeed-meme.gif", audio: "./resources/Audio/please-speed-i-need-this.mp3" },
+  { order: 5, text: "seriously??", src: "./resources/No/katieCry.gif", audio: "./resources/Audio/sad-meow-song.mp3"},
+  { order: 6, text: "last chance... a funny video to convince you!", src: "./resources/No/slush_drop.mp4" },
+  { order: 7, text: "ok then... see u sometime i guess....", src: "./resources/No/sadant.jpg", audio: "./resources/Audio/easy.mp3"},
 ];
 
-const blackmail = [
-  "Please",
-  "I'm begging you",
-  "I'm crying",
-  "I'm sad",
-  "HUHUHUHU",
-  "Please Say Yes",
-  "I'm gonna cry",
-];
+const orderedSadSequence = [...sadSequence].sort((a, b) => a.order - b.order);
 
 function normal() {
   var paperText = document.getElementById("paperText");
@@ -179,10 +312,10 @@ function no() {
 
   // Show the sad modal only after 10 "No" clicks
   if (counter >= 10) {
-    let sadMusic = document.getElementById("sadMusic");
     let happyMusic = document.getElementById("happyMusic");
+    let noSequenceAudio = document.getElementById("noSequenceAudio");
+    let sadStepAudio = document.getElementById("sadStepAudio");
     happyMusic.pause();
-    sadMusic.play();
     let model = document.getElementById("model");
     model.style.display = "flex";
     const btns = document.getElementById("btns");
@@ -190,10 +323,59 @@ function no() {
       btns.style.display = "none";
     }
     const modelImage = document.getElementById("modelImg");
+    const modelVideo = document.getElementById("modelVid");
     const modelText = document.getElementById("modelText");
-    modelImage.src = sadCat[Math.floor(Math.random() * sadCat.length)];
-    modelText.innerText =
-      blackmail[Math.floor(Math.random() * blackmail.length)];
+    const modalYes = model ? model.querySelector("#yes") : null;
+    const modalNo = model ? model.querySelector("#no") : null;
+    const homeBtn = document.getElementById("homeBtn");
+    const stepIndex = Math.min(counter - 10, orderedSadSequence.length - 1);
+    const step = orderedSadSequence[stepIndex];
+    const isVideo = /\.(mp4|webm)$/i.test(step.src);
+    if (isVideo) {
+      modelImage.style.display = "none";
+      modelVideo.style.display = "block";
+      modelVideo.src = step.src;
+      modelVideo.muted = false;
+      modelVideo.currentTime = 0;
+      modelVideo.play().catch(() => {});
+    } else {
+      modelVideo.pause();
+      modelVideo.style.display = "none";
+      modelVideo.muted = true;
+      modelImage.style.display = "block";
+      modelImage.src = step.src;
+    }
+    modelText.innerText = step.text;
+
+    if (stepIndex >= orderedSadSequence.length - 1) {
+      if (modalYes) modalYes.style.display = "none";
+      if (modalNo) modalNo.style.display = "none";
+      if (homeBtn) homeBtn.style.display = "inline-block";
+    }
+
+    if (step.order === 1 && noSequenceAudio) {
+      noSequenceAudio.currentTime = 0;
+      noSequenceAudio.play();
+    } else if (noSequenceAudio) {
+      noSequenceAudio.pause();
+    }
+
+    if (step.order === 1 && bgSong) {
+      bgSong.pause();
+      bgSong.currentTime = 0;
+    }
+
+    if (sadStepAudio) {
+      if (step.audio) {
+        if (sadStepAudio.src !== step.audio) {
+          sadStepAudio.src = step.audio;
+        }
+        sadStepAudio.currentTime = 0;
+        sadStepAudio.play().catch(() => {});
+      } else {
+        sadStepAudio.pause();
+      }
+    }
   }
 }
 
@@ -201,8 +383,6 @@ function yes() {
   if (counter >= 3) {
     let model = document.getElementById("model2");
     let model2 = document.getElementById("model");
-    let sadMusic = document.getElementById("sadMusic");
-    sadMusic.pause();
     model2.style.display = "none";
     let happyMusic = document.getElementById("happyMusic");
     happyMusic.play();
@@ -217,7 +397,7 @@ function yes() {
       paperText.innerText = "We are dating now. I love you cutie.";
     }
   } else {
-    alert("Kuch to Bhao khao cutie. Sidhe yes mat bola karo.");
+    alert("Not so fast—try clicking No a few times first.");
   }
 }
 
@@ -226,4 +406,8 @@ function ly2() {
   model.style.display = "none";
   let model2 = document.getElementById("model");
   model2.style.display = "none";
+}
+
+function goHome() {
+  window.location.reload();
 }
