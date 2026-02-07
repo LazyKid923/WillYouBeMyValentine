@@ -209,28 +209,13 @@ html {
 }
 
 
-.paper {
+.letter-img {
   width: min(520px, 80vw);
-  aspect-ratio: 1 / 1.4142; /* A4 ratio */
-  padding: 28px 32px;
-  background: #ffffff;
-  border: 1px solid #e6e6e6;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+  height: auto;
+  display: block;
 }
 
-.compact-paper .paper {
-  width: min(420px, 82vw);
-  min-height: 200px;
-  padding: 24px 28px;
-  aspect-ratio: auto;
-}
-
-.paper-hidden .paper {
+.letter-hidden .letter-img {
   display: none;
 }
 
@@ -245,14 +230,6 @@ html {
   60% { transform: translateX(-5px); }
   80% { transform: translateX(5px); }
   100% { transform: translateX(0); }
-}
-
-.paper-text {
-  font-family: "Lovers Quarrel";
-  font-size: 42px;
-  color: #7a2f4f;
-  margin: 0;
-  line-height: 1.1;
 }
 
 .bambi-wrap {
@@ -393,13 +370,8 @@ html {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .paper {
-    min-height: 220px;
-    padding: 22px 24px;
-  }
-
-  .paper-text {
-    font-size: 34px;
+  .letter-img {
+    width: min(420px, 90vw);
   }
 
   .envelope-img {

@@ -48,15 +48,16 @@
 
     <!-- Main Content (hidden initially) -->
     <div class="main-content" id="mainContent">
-      <div class="paper" id="paperCard">
-        <p class="paper-text" id="paperText">Do you want to be my Valentine? 🥺</p>
-      </div>
+      <img
+        class="letter-img"
+        id="letterImg"
+        src="./resources/valentine.png"
+        alt="Valentine letter"
+      />
       <div class="flex" id="btns">
         <button
           class="button"
           id="yesMain"
-          onmouseenter="happy()"
-          onmouseleave="normal()"
           onclick="yes()"
         >
           Of course!
@@ -64,8 +65,6 @@
         <button
           class="button"
           id="noMain"
-          onmouseenter="angry()"
-          onmouseleave="normal()"
           onclick="no()"
         >
           Hell nawh

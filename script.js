@@ -256,19 +256,6 @@ document.addEventListener("DOMContentLoaded", function () {
   renderRandomImages();
 });
 
-function angry() {
-  var paperText = document.getElementById("paperText");
-  if (paperText) {
-    paperText.innerText = "Okay… maybe later? 🥺";
-  }
-}
-
-function happy() {
-  var paperText = document.getElementById("paperText");
-  if (paperText) {
-    paperText.innerText = "Say yes? It would make me so happy 💖";
-  }
-}
 
 // Sequence for the "No" modal (ordered by 'order' ascending)
 const sadSequence = [
@@ -322,12 +309,6 @@ let happyIndex = -1;
 let happyAudioQueue = [];
 let happyAudioIndex = 0;
 
-function normal() {
-  var paperText = document.getElementById("paperText");
-  if (paperText) {
-    paperText.innerText = "Do you want to be my Valentine? 🥺";
-  }
-}
 
 let counter = 0;
 let yesButtonScale = 1;
@@ -477,8 +458,7 @@ function no() {
     let sadStepAudio = document.getElementById("sadStepAudio");
     let model = document.getElementById("model");
     model.style.display = "flex";
-    document.body.classList.add("compact-paper");
-    document.body.classList.add("paper-hidden");
+    document.body.classList.add("letter-hidden");
     const btns = document.getElementById("btns");
     if (btns) {
       btns.style.display = "none";
@@ -544,7 +524,6 @@ function yes() {
   const model = document.getElementById("model2");
   const sadModel = document.getElementById("model");
   const btns = document.getElementById("btns");
-  const paperText = document.getElementById("paperText");
   const loveHeader = document.getElementById("loveHeader");
   const loveVideo = document.getElementById("loveVideo");
   const correctAudio = document.getElementById("correctAudio");
@@ -568,12 +547,8 @@ function yes() {
   }
 
   if (sadModel) sadModel.style.display = "none";
-  document.body.classList.add("compact-paper");
-  document.body.classList.add("paper-hidden");
+  document.body.classList.add("letter-hidden");
   if (btns) btns.style.display = "none";
-  if (paperText) {
-    paperText.innerText = "I LOVE YOU!";
-  }
   if (loveHeader) {
     loveHeader.innerText = "I LOVE YOU!";
   }
